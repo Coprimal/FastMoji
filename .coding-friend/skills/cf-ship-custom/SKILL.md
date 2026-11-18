@@ -74,10 +74,10 @@ gh api repos/Coprimal/FastMoji/pages --jq .build_type
   never pass `-derivedDataPath`),
   then rerun the check.
 - Check 4: an existing profile of the same Apple team works. If `fastmoji-notary` is missing,
-  check `simplemapper-notary` (same team `86H6CNLN4C`) and use it when it passes; stop only when
-  both fail. Shell state does not persist between agent commands, so an override must be on the
-  same command line as every script call that uses it, e.g.
-  `FASTMOJI_NOTARY_PROFILE=simplemapper-notary scripts/ship.sh` (a separate `export` is lost).
+  use `apple-notary` (same team `86H6CNLN4C`, the user's choice on 2026-11-18) when it passes;
+  stop only when both fail. Shell state does not persist between agent commands, so an override
+  must be on the same command line as every script call that uses it, e.g.
+  `FASTMOJI_NOTARY_PROFILE=apple-notary scripts/ship.sh` (a separate `export` is lost).
   Check such a profile with `xcrun notarytool history --keychain-profile <name>`.
 - Check 5: the Pages check must print `workflow` (Settings > Pages > Source = GitHub Actions). A 404
   means Pages is not enabled yet: stop and print `docs/RELEASING.md §0 GitHub Pages` (never enable
