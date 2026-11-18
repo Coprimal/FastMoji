@@ -4,7 +4,7 @@
 <dict>
 	<!-- Partial Info.plist: merged with the generated one (GENERATE_INFOPLIST_FILE=YES). Sparkle keys only. -->
 	<key>SUFeedURL</key>
-	<string>https://dinhanhthi.github.io/FastMoji/appcast.xml</string>
+	<string>https://fastmoji.coprimal.dev/appcast.xml</string>
 	<key>SUPublicEDKey</key>
 	<string>9MOR7nDCLNkntRovkiR/Y16L6GfAetAXiG7wwBuxh/g=</string>
 	<key>SUEnableAutomaticChecks</key>

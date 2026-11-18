@@ -69,6 +69,6 @@ scripts/publish-appcast.sh "$ZIP"
 echo
 echo "========================================"
 echo "  FastMoji v$VERSION shipped!"
-echo "  GitHub : https://github.com/dinhanhthi/FastMoji/releases/tag/v$VERSION"
-echo "  Appcast: https://dinhanhthi.github.io/FastMoji/appcast.xml (live in ~1 min)"
+echo "  GitHub : https://github.com/Coprimal/FastMoji/releases/tag/v$VERSION"
+echo "  Appcast: https://fastmoji.coprimal.dev/appcast.xml (live in ~1 min)"
 echo "========================================"

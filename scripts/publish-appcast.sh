@@ -6,7 +6,8 @@
 # release/appcast-archives/ that holds only the new zip plus a copy of the repo-root
 # appcast.xml (so older items keep their original download URLs, and the history
 # survives a deleted release/ folder), copies the result back to the repo root,
-# commits, and pushes to main (the Pages workflow then deploys it).
+# commits, and pushes to main (the Pages workflow then deploys it), then copies it to
+# the old-feed mirror read by builds <= 1.0.1 (scripts/sync-feed-mirror.sh).
 #
 # The zip must already be notarized + stapled (build-and-notarize.sh) and the GitHub
 # Release must exist (publish-release.sh), since the appcast points at its asset URL.
@@ -22,7 +23,7 @@
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-GH_REPO="dinhanhthi/FastMoji"
+GH_REPO="Coprimal/FastMoji"
 ARCHIVES="release/appcast-archives"
 
 ZIP="${1:-}"
@@ -80,6 +81,10 @@ git add appcast.xml
 git commit -m "chore(release): appcast v$VERSION" -- appcast.xml
 git push origin main
 
+# Builds <= 1.0.1 read the old github.io feed: keep its mirror current.
+echo "==> Syncing the old-feed mirror"
+scripts/sync-feed-mirror.sh appcast.xml
+
 echo
 echo "Done. appcast.xml pushed — Pages deploy triggered (~1 min to go live)."
-echo "  Verify: curl -fsSL https://dinhanhthi.github.io/FastMoji/appcast.xml | grep shortVersionString"
+echo "  Verify: curl -fsSL https://fastmoji.coprimal.dev/appcast.xml | grep shortVersionString"

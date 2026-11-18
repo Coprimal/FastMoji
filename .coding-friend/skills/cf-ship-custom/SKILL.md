@@ -8,7 +8,7 @@ user's own messages direct the flow.
 This is a **version bump + changelog + ship** workflow for FastMoji. The release runs
 **entirely on this machine** (`docs/RELEASING.md`): archive → Developer ID sign →
 notarize → zip + DMG → GitHub Release → Sparkle appcast → GitHub Pages. There is no CI release
-workflow; the only workflow is `deploy-pages.yml`, which publishes `appcast.xml` to Pages.
+workflow; the only workflow is `pages.yml`, which publishes `appcast.xml` to Pages.
 
 This **Before** section handles prep (commits → version → changelog → file updates). The
 **After** section runs the actual local release.
@@ -49,7 +49,7 @@ xcrun notarytool history --keychain-profile "${FASTMOJI_NOTARY_PROFILE:-fastmoji
 
 # 5. GitHub CLI and Pages source
 gh auth status
-gh api repos/dinhanhthi/FastMoji/pages --jq .build_type
+gh api repos/Coprimal/FastMoji/pages --jq .build_type
 ```
 
 - Check 1, branch: not on `main` → stop ("switch to main: `git switch main`"). Never switch
@@ -102,19 +102,19 @@ Release carry the same value). Decide from the **remote** state
   (other commits may sit on top of an interrupted `scripts/ship.sh`). It never blocks a normal next
   release: before Step B4 bumps, `project.pbxproj` still holds the last shipped version, whose appcast
   entry exists, so that case goes to (d). List the release assets:
-  `gh release view vX.Y.Z --repo dinhanhthi/FastMoji --json assets --jq '.assets[].name'`.
+  `gh release view vX.Y.Z --repo Coprimal/FastMoji --json assets --jq '.assets[].name'`.
   - Release missing (the command fails) → if `release/export/FastMoji-X.Y.Z.zip` exists, write
     the notes file from the `## [X.Y.Z]` section of `CHANGELOG.md`:
     `awk '/^## \[X\.Y\.Z\]/{f=1;next} f&&/^## /{exit} f' CHANGELOG.md > release/export/FastMoji-X.Y.Z.md`,
-    then `gh release create vX.Y.Z release/export/FastMoji-X.Y.Z.zip --repo dinhanhthi/FastMoji --title "FastMoji X.Y.Z" --notes-file release/export/FastMoji-X.Y.Z.md`
+    then `gh release create vX.Y.Z release/export/FastMoji-X.Y.Z.zip --repo Coprimal/FastMoji --title "FastMoji X.Y.Z" --notes-file release/export/FastMoji-X.Y.Z.md`
     and, if `release/export/FastMoji-X.Y.Z.dmg` exists,
-    `gh release upload vX.Y.Z release/export/FastMoji-X.Y.Z.dmg --repo dinhanhthi/FastMoji`.
+    `gh release upload vX.Y.Z release/export/FastMoji-X.Y.Z.dmg --repo Coprimal/FastMoji`.
   - Release exists but `FastMoji-X.Y.Z.zip` or `FastMoji-X.Y.Z.dmg` is missing →
-    `gh release upload vX.Y.Z release/export/<missing file> --repo dinhanhthi/FastMoji`.
+    `gh release upload vX.Y.Z release/export/<missing file> --repo Coprimal/FastMoji`.
   - A local file needed above is missing → STOP: "The notarized build of vX.Y.Z is gone.
     Delete the tag (docs/RELEASING.md §2 rollback) and run /cf-ship again."
   - Then ALWAYS fetch the published zip so the appcast signs the bytes on GitHub:
-    `gh release download vX.Y.Z --repo dinhanhthi/FastMoji --pattern 'FastMoji-X.Y.Z.zip' --dir release/export --clobber`.
+    `gh release download vX.Y.Z --repo Coprimal/FastMoji --pattern 'FastMoji-X.Y.Z.zip' --dir release/export --clobber`.
   - Then run `scripts/publish-appcast.sh release/export/FastMoji-X.Y.Z.zip`, print the
     summary (Step A2) and stop.
 - **(d)** Otherwise (no tag for `X.Y.Z` on origin and `HEAD` is not its release commit, or the
@@ -253,17 +253,36 @@ It refuses a dirty tree of tracked files or an existing tag `vX.Y.Z` (use Resume
    notarize + staple → zip + DMG in `release/export/`.
 2. `publish-release.sh --yes` — tag `vX.Y.Z` + GitHub Release with the zip and DMG.
 3. `publish-appcast.sh` — `generate_appcast --account FastMoji`, commits
-   `chore(release): appcast vX.Y.Z` and pushes `appcast.xml` (Pages deploys it in ~1 min).
+   `chore(release): appcast vX.Y.Z` and pushes `appcast.xml` (Pages deploys it in ~1 min),
+   then copies it to the old-feed mirror `dinhanhthi/dinhanhthi.github.io` at `FastMoji/appcast.xml`
+   (`scripts/sync-feed-mirror.sh`), read by builds <= 1.0.1. If only the mirror step failed,
+   rerun `scripts/sync-feed-mirror.sh appcast.xml`.
 
 If Keychain prompts appear (codesign, notarytool, generate_appcast), the user clicks **Always Allow**.
 
-### Step A2: Print summary
+### Step A2: Check the feeds, then print summary
+
+Wait for the `pages.yml` run of the appcast commit, then check both feeds list the new version
+(`gh run list` right after a push can still return the previous run, so filter by commit and retry):
+
+```bash
+for i in $(seq 1 30); do
+  RUN_ID=$(gh run list --repo Coprimal/FastMoji --workflow pages.yml --commit "$(git rev-parse HEAD)" --json databaseId --jq '.[0].databaseId // empty')
+  [ -n "$RUN_ID" ] && break; sleep 10
+done
+gh run watch "$RUN_ID" --repo Coprimal/FastMoji --exit-status
+curl -fsSL https://fastmoji.coprimal.dev/appcast.xml | grep -F '/vX.Y.Z/'
+curl -fsSL https://dinhanhthi.github.io/FastMoji/appcast.xml | grep -F '/vX.Y.Z/'   # old-feed mirror, may lag ~1 min
+```
+
+A failed run or a feed without `/vX.Y.Z/` (after a retry a minute later) is a hard failure: stop
+and report it. Then print:
 
 ```
 Shipped (local flow):
   FastMoji vX.Y.Z — notarized zip + dmg on the GitHub Release
-  GitHub Release: https://github.com/dinhanhthi/FastMoji/releases/tag/vX.Y.Z
-  Appcast: https://dinhanhthi.github.io/FastMoji/appcast.xml
+  GitHub Release: https://github.com/Coprimal/FastMoji/releases/tag/vX.Y.Z
+  Appcast: https://fastmoji.coprimal.dev/appcast.xml
 ```
 
 ---
