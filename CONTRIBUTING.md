@@ -76,10 +76,17 @@ The same script also writes `FastMoji/Resources/symbols.json` and checks `FastMo
 
 Releases are built, notarized and published locally, with Sparkle for in-app updates.
 
+## Update feed
+
+- **Feed:** since 1.0.2, `SUFeedURL` is `https://fastmoji.coprimal.dev/appcast.xml`, served by GitHub Pages through `.github/workflows/pages.yml` (Settings > Pages > Source = "GitHub Actions", custom domain `fastmoji.coprimal.dev` with Enforce HTTPS) and a Cloudflare CNAME `fastmoji` → `coprimal.github.io` (DNS only). Its source is the root `appcast.xml` on `main`.
+- **Old builds:** the repo moved from `dinhanhthi/FastMoji` to `Coprimal/FastMoji` in 2026-11. Builds <= 1.0.1 read `https://dinhanhthi.github.io/FastMoji/appcast.xml`, which GitHub no longer serves or redirects, so the user site `dinhanhthi/dinhanhthi.github.io` serves a mirror of the feed at `FastMoji/appcast.xml`. `scripts/publish-appcast.sh` updates it on every release through `scripts/sync-feed-mirror.sh`; never edit it by hand. If only that step failed, rerun `scripts/sync-feed-mirror.sh appcast.xml`.
+- **Never:** delete the mirror repo or give its site a custom domain, move or rename the root `appcast.xml`, change the Pages source, remove the custom domain, or create or fork a repo named `dinhanhthi/FastMoji` (it would take over the old path and break GitHub's redirects to `Coprimal/FastMoji`).
+- **Feed check:** `curl -sI https://fastmoji.coprimal.dev/appcast.xml` shows HTTP 200 without `location`, and both `curl -s https://fastmoji.coprimal.dev/appcast.xml | cmp - appcast.xml` and `curl -sL https://dinhanhthi.github.io/FastMoji/appcast.xml | cmp - appcast.xml` print nothing.
+
 ## Commits
 
 Use one-line conventional commits, for example `feat: add paste insertion` or `fix(inline): close on app switch`.
 
 ## Issues and pull requests
 
-For bigger changes, open an [issue](https://github.com/dinhanhthi/FastMoji/issues) first to discuss the idea. Keep pull requests focused on one change.
+For bigger changes, open an [issue](https://github.com/Coprimal/FastMoji/issues) first to discuss the idea. Keep pull requests focused on one change.

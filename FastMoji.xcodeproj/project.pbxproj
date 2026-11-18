@@ -257,7 +257,7 @@
 				INFOPLIST_FILE = FastMoji/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FastMoji;
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Anh-Thi Dinh";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Coprimal";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -277,7 +277,7 @@
 				INFOPLIST_FILE = FastMoji/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = FastMoji;
 				INFOPLIST_KEY_LSUIElement = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Anh-Thi Dinh";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "© 2026 Coprimal";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",

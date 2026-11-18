@@ -7,7 +7,7 @@
 <p align="center">A simple, fast way to insert emoji anywhere on macOS.</p>
 
 <p align="center">
-  <a href="https://github.com/dinhanhthi/FastMoji/releases/latest"><img src="https://img.shields.io/badge/Download-macOS%2014%2B-black?style=for-the-badge&logo=apple" alt="Download"></a>
+  <a href="https://github.com/Coprimal/FastMoji/releases/latest"><img src="https://img.shields.io/badge/Download-macOS%2014%2B-black?style=for-the-badge&logo=apple" alt="Download"></a>
   <a href="CONTRIBUTING.md"><img src="https://img.shields.io/badge/Contributing-guide-blue?style=for-the-badge" alt="Contributing"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-MIT-green?style=for-the-badge" alt="License"></a>
 </p>
@@ -65,3 +65,7 @@ macOS 14 or later.
 Emoji data from [emojibase](https://github.com/milesj/emojibase) (MIT) and [Unicode CLDR](https://cldr.unicode.org) annotations (Unicode License v3), see [FastMoji/Resources/EMOJI_LICENSE.txt](FastMoji/Resources/EMOJI_LICENSE.txt). The symbol and kaomoji lists are FastMoji's own (symbol keywords in other languages come from CLDR).
 
 To build from source, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+## License
+
+MIT © [Coprimal](https://coprimal.dev), see [LICENSE](LICENSE).

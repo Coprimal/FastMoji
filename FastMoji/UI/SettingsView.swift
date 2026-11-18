@@ -146,6 +146,10 @@ struct SettingsView: View {
             Text("Version \(Self.version)")
                 .font(.caption)
                 .foregroundStyle(.secondary)
+            Link("Coprimal", destination: Self.authorURL)
+                .buttonStyle(.link)
+                .font(.caption)
+                .help(Self.authorURL.absoluteString)
             Link("GitHub", destination: Self.projectURL)
                 .buttonStyle(.link)
                 .font(.caption)
@@ -156,7 +160,8 @@ struct SettingsView: View {
         .background(.black.opacity(0.25), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 
-    static let projectURL = URL(string: "https://github.com/dinhanhthi/FastMoji")!
+    static let projectURL = URL(string: "https://github.com/Coprimal/FastMoji")!
+    static let authorURL = URL(string: "https://coprimal.dev")!
 
     private static var version: String {
         Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "?"
